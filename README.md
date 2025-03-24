@@ -131,3 +131,40 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Font used: [Horizon](https://horizon.xyz)
 - Icons from [React Icons](https://react-icons.github.io/react-icons/)
 - 3D assets created with [Spline](https://spline.design)
+
+### Adding More Dock Items
+
+To add more items to the dock, modify the items array in `page.tsx`:
+
+```tsx
+const items = [
+  { icon: <VscHome size={24} className="text-purple-100" />, label: 'Home', onClick: () => alert('Home!') },
+  // Add more items here
+];
+```
+
+## 📱 Responsive Design
+
+The landing page is fully responsive and optimized for:
+- Desktop computers
+- Tablets
+- Mobile devices
+
+## 🌐 Deployment
+
+This project can be easily deployed on Vercel:
+
+1. Push your code to a GitHub repository
+2. Connect your repository to Vercel
+3. Deploy
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgements
+
+- Font used: [Horizon](https://horizon.xyz)
+- Icons from [React Icons](https://react-icons.github.io/react-icons/)
+- 3D assets created with [Spline](https://spline.design)
+
