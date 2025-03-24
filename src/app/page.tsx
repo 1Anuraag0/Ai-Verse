@@ -12,8 +12,6 @@ import MetallicText from './components/MetallicText';
 
 // Dynamically import Spline with no SSR to improve initial load time
 const SplineComponent = dynamic(() => import('@splinetool/react-spline'), {
-
-
   ssr: false,
   loading: () => <div className="w-full h-full bg-black/50 animate-pulse"></div>
 });
