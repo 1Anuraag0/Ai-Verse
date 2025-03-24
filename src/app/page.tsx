@@ -1,103 +1,151 @@
-import Image from "next/image";
+"use client";
+
+import React, { Suspense, useState, useEffect } from "react";
+import Background from "./components/Background";
+import DecryptedText from './components/DecryptedText';
+import SplashCursor from './Splashcursor';
+import Dock from './components/Dock';
+import dynamic from 'next/dynamic';
+import { VscHome, VscArchive, VscAccount, VscSettingsGear } from 'react-icons/vsc';
+import useRemoveWatermark from './hooks/useRemoveWatermark';
+import MetallicText from './components/MetallicText';
+
+// Dynamically import Spline with no SSR to improve initial load time
+const SplineComponent = dynamic(() => import('@splinetool/react-spline'), {
+  ssr: false,
+  loading: () => <div className="w-full h-full bg-black/50 animate-pulse"></div>
+});
+
+// Loading component for the text
+const LoadingText = () => (
+  <div className="flex flex-col space-y-4">
+    <div className="h-16 bg-gray-700/30 rounded animate-pulse w-64"></div>
+    <div className="h-14 bg-gray-700/30 rounded animate-pulse w-32"></div>
+    <div className="h-16 bg-gray-700/30 rounded animate-pulse w-64"></div>
+  </div>
+);
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [showText, setShowText] = useState(false);
+  const [loopingEnabled, setLoopingEnabled] = useState(false);
+  
+  // Use the custom hook to remove Spline watermark
+  useRemoveWatermark();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // Handle Spline load event
+  const onSplineLoad = () => {
+    setIsLoaded(true);
+    // Delay showing text to further improve perceived performance
+    setTimeout(() => setShowText(true), 300);
+    // Enable looping animations after the initial animation completes
+    setTimeout(() => setLoopingEnabled(true), 5000);
+  };
+
+  // Dock items
+  const items = [
+    { icon: <VscHome size={24} className="text-purple-100" />, label: 'Home', onClick: () => alert('Home!') },
+    { icon: <VscArchive size={24} className="text-purple-100" />, label: 'Archive', onClick: () => alert('Archive!') },
+    { icon: <VscAccount size={24} className="text-purple-100" />, label: 'Profile', onClick: () => alert('Profile!') },
+    { icon: <VscSettingsGear size={24} className="text-purple-100" />, label: 'Settings', onClick: () => alert('Settings!') },
+  ];
+
+  const textStyle = "metallic font-horizon font-black";
+  const encryptedStyle = "text-zinc-200 font-horizon font-black opacity-70";
+  const parentStyle = "tracking-wider [filter:drop-shadow(0_0_10px_rgba(200,200,220,0.4))]";
+
+  return (
+    <>
+      <Background />
+      <SplashCursor />
+      
+      {/* Spline 3D scene in the background */}
+      <div className="absolute z-0 spline-container" style={{ 
+        top: '0',
+        left: '25%', /* Adjust this value to shift horizontally */
+        width: '90%', /* Adjust width as needed */
+        height: '100%'
+      }}>
+        <Suspense fallback={<div className="w-full h-full bg-black flex items-center justify-center">Loading 3D scene...</div>}>
+          <SplineComponent 
+            scene="https://prod.spline.design/zerBqjqdoGPtpC51/scene.splinecode" 
+            onLoad={onSplineLoad}
+          />
+          {/* Blur overlay for the watermark */}
+          <div className="fixed bottom-0 right-0 w-[150px] h-[50px] z-[9999] backdrop-blur-xl bg-black/30"></div>
+        </Suspense>
+      </div>
+      
+      {/* Text stacked vertically on the left side */}
+      <div className="flex items-center min-h-screen relative z-10">
+        <div className="absolute left-[3%] top-1/2 transform -translate-y-1/2 flex flex-col space-y-4 pointer-events-none">
+          {!showText ? (
+            <LoadingText />
+          ) : (
+            <>
+              {/* WELCOME - with looping animation */}
+              <div>
+                <DecryptedText
+                  text="Welcome"
+                  animateOn={loopingEnabled ? "loop" : "view"}
+                  revealDirection="start"
+                  sequential={true}
+                  speed={150}
+                  maxIterations={50}
+                  className={textStyle}
+                  encryptedClassName={encryptedStyle}
+                  parentClassName={`text-4xl md:text-7xl ${parentStyle}`}
+                />
+              </div>
+              
+              {/* TO - with looping animation */}
+              <div>
+                <DecryptedText
+                  text="To"
+                  animateOn={loopingEnabled ? "loop" : "view"}
+                  revealDirection="center"
+                  sequential={true}
+                  speed={150}
+                  maxIterations={50}
+                  className={textStyle}
+                  encryptedClassName={encryptedStyle}
+                  parentClassName={`text-4xl md:text-7xl ${parentStyle}`}
+                />
+              </div>
+              
+              {/* AI VERSE - only using MetallicText */}
+              <div>
+                <MetallicText 
+                  text="AiVerse"
+                  fontFamily="Horizon, sans-serif"
+                  fontSize={275}
+                  className={`${parentStyle}`}
+                  params={{
+                    patternScale: 2.0,
+                    refraction: 0.015,
+                    edge: 1.0,
+                    patternBlur: 0.005,
+                    liquid: 0.07,
+                    speed: 0.3
+                  }}
+                />
+              </div>
+            </>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      </div>
+      
+      {/* Only show dock when everything else is loaded */}
+      {isLoaded && (
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-20">
+          <Dock 
+            items={items}
+            panelHeight={75}
+            baseItemSize={55}
+            magnification={80}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        </div>
+      )}
+    </>
   );
 }

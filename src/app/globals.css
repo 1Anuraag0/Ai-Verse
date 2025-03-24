@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #ffffff;
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
 }
 
 @theme inline {
@@ -10,6 +13,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-orbitron: var(--font-orbitron);
+  --font-horizon: var(--font-horizon);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,4 +28,197 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.font-orbitron {
+  font-family: var(--font-orbitron);
+}
+
+.font-horizon {
+  font-family: var(--font-horizon);
+}
+
+.hero-gradient {
+  background: linear-gradient(to right, #4a00e0, #8e2de2);
+  background-size: 200% 200%;
+  animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@layer utilities {
+  .metallic-gradient {
+    background: linear-gradient(
+      to bottom,
+      #ffffff 0%,
+      #c0c0c0 8%,
+      #ffffff 12%,
+      #808080 20%,
+      #ffffff 30%,
+      #a0a0a0 40%,
+      #ffffff 50%,
+      #707070 60%,
+      #ffffff 70%,
+      #b0b0b0 80%,
+      #ffffff 90%,
+      #e0e0e0 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    position: relative;
+    text-shadow: 0px 3px 4px rgba(0, 0, 0, 0.3), 0px -1px 2px rgba(0, 0, 0, 0.2);
+    filter: drop-shadow(0 1px 3px rgba(255, 255, 255, 0.85));
+    animation: shine 3s linear infinite;
+  }
+  
+  @keyframes shine {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  .metallic-gold {
+    background: linear-gradient(
+      to bottom,
+      #fff7d5 0%,
+      #ffdd35 10%,
+      #ffeb80 20%,
+      #daa520 30%,
+      #ffd700 40%,
+      #b8860b 50%,
+      #ffd700 60%,
+      #b8860b 70%,
+      #ffd700 80%,
+      #b8860b 90%,
+      #ffd700 100%
+    );
+    background-size: 200% 200%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    position: relative;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4), 0px -1px 2px rgba(0, 0, 0, 0.2);
+    filter: drop-shadow(0 1px 3px rgba(255, 215, 0, 0.7));
+    animation: gold-shine 4s linear infinite;
+  }
+  
+  @keyframes gold-shine {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  .metallic-cyan {
+    background: linear-gradient(
+      to bottom,
+      #e6ffff 0%,
+      #00e5ff 10%,
+      #80ffff 20%,
+      #00a5b5 30%,
+      #00ffff 40%,
+      #008b8b 50%,
+      #00ffff 60%,
+      #008b8b 70%,
+      #00ffff 80%,
+      #008b8b 90%,
+      #00ffff 100%
+    );
+    background-size: 200% 200%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    position: relative;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4), 0px -1px 2px rgba(0, 0, 0, 0.2);
+    filter: drop-shadow(0 1px 3px rgba(0, 255, 255, 0.7));
+    animation: cyan-shine 4s linear infinite;
+  }
+  
+  @keyframes cyan-shine {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+}
+
+/* Hide Spline watermark - comprehensive approach */
+[class*="styles_watermark__"],
+canvas + div[style*="position: absolute"][style*="bottom: 0px"][style*="right: 0px"],
+div[style*="position: fixed"][style*="bottom: 8px"][style*="right: 8px"],
+div[style*="position: fixed"][style*="bottom: 0"][style*="right: 0"],
+div[style*="z-index: 999"],
+a[href*="spline.design"],
+a[href="https://spline.design"],
+div[class*="watermark"] {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* Additional overlay to cover the watermark area */
+.spline-container::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 150px;
+  height: 50px;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+@font-face {
+  font-family: 'Horizon';
+  src: url('/src/fonts/Horizon.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Metallic text styles */
+.metallic {
+  background: linear-gradient(135deg, #c7d2fe 0%, #8b5cf6 50%, #6366f1 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 6px rgba(147, 51, 234, 0.5));
+  text-shadow: 0 0 12px rgba(139, 92, 246, 0.3);
+}
+
+/* Optimize WebGL rendering */
+canvas {
+  image-rendering: high-quality;
+  image-rendering: -webkit-optimize-contrast;
 }
